@@ -5,6 +5,13 @@
 
 #include "board.h"
 
+#define MAX_DIE     6
+
+int rolldie(void)
+{
+    return rand()%MAX_DIE+1;
+}
+
 int main(int argc, char *argv[])
 {
     srand( (unsigned) time(NULL) );
@@ -36,8 +43,6 @@ int main(int argc, char *argv[])
     printf("                   vvvvvvvvvvvvvv                     \n");
     printf("                 YOU WIN!!!!!!!!!!!                   \n");
     printf("======================================================\n\n\n");
-    
-    
     
     system("PAUSE");	
     return 0;
