@@ -11,9 +11,6 @@
 #define PLAYERSTATUS_DIE        1
 #define PLAYERSTATUS_END        2
 
-#define BOARDSTATUS_OK            1
-#define BOARDSTATUS_NOK           0
-
 char player_name[N_PLAYER][MAX_LENGTH];
 int player_position[N_PLAYER];
 int player_coin[N_PLAYER];
@@ -48,7 +45,9 @@ void printPlayerStatus(void)
      for ( i = 0 ; i < N_PLAYER ; i++ )
      {
          printf("%s : pos %i, coin %i, status %s\n",
-                    player_name[i], player_position[i], player_coin[i],
+                    player_name[i], 
+                    player_position[i], 
+                    player_coin[i],
                     player_statusString[player_status[i]]);
          
          printPlayerPosition(i);
@@ -70,6 +69,34 @@ void initPlayer(void)
      }
 }
 
+int gameEnd(void)
+{
+    int i;
+    int flag_end = 1;
+    
+    for (i = 0 ; i < N_PLAYER ; i++)
+    {
+        if (player_status[i] == PLAYERSTATUS_LIVE)
+           flag_end = 0;
+    }
+    return flag_end;
+}
+
+void checkDie(void)
+{
+    int i;
+     
+    for (i = 0; i<N_PLAYER ; i++)
+    {
+        if (board_getBoardStatus(player_position[i]) == BOARDSTATUS_NOK)
+        {
+           player_status[i] = PLAYERSTATUS_DIE;
+           printf("So sad! %s died at posision %i\n",
+                      player_name[i], player_position[i]);
+        }
+    }    
+}
+
 int rolldie(void)
 {
     return rand()%MAX_DIE+1;
@@ -78,9 +105,10 @@ int rolldie(void)
 int main(int argc, char *argv[])
 {
     int cnt;
+    //int pos;
     int turn;
     int dum;
-    int coinResult;
+    //int coinResult;
     
     srand( (unsigned) time(NULL) );
     
@@ -101,8 +129,9 @@ int main(int argc, char *argv[])
     //step 2. turn play (do-while)
     
     cnt = 0;
+    //pos = 0;
     turn = 0;
-    coinResult = 0;
+    //coinResult = 0;
     
     do {
        int die_result;
@@ -128,8 +157,17 @@ int main(int argc, char *argv[])
        die_result = rolldie();  //player turn
        
        // 2-3. move (result) //player turn
+       
+       //pos += die_result;
+       
+       //printf("pos : %i (die : %i)\n", pos, die_result);
+       
+       //coinResult += board_getBoardCoin(pos);
+       
+       //printf("coin : %i\n", coinResult);
+       
        player_position[turn] += die_result;
-       if ( player_position[turn] >= N_BOARD )
+       if ( player_position[turn] >= N_BOARD-1 )
        {
           player_position[turn] = N_BOARD-1;
           player_status[turn] = PLAYERSTATUS_END;
@@ -138,8 +176,8 @@ int main(int argc, char *argv[])
        printf("Die result : %i, %s moved to %i\n", die_result,
                    player_name[turn], player_position[turn]);
        
-       player_coin[turn] += board_getBoardCoin(player_coin[turn]);
-       printf("coin : %i\n", player_coin[turn]);
+       player_coin[turn] += board_getBoardCoin(player_position[turn]);
+       printf("Lucky! %s got %i coins\n", player_name[turn], player_coin[turn]);
        
        // 2-4. change turn, shark move
        cnt++;
@@ -149,10 +187,13 @@ int main(int argc, char *argv[])
        //shark move
        if (turn == 0)
        {
-          int shark_position = board_stepShark();
+          int shark_pos = board_stepShark();
+          printf("Shark moved to %i\n", shark_pos);
+          
+          checkDie();
        }
        
-    } while (cnt < 5);      //game end condition
+    } while (gameEnd() == 0);      //game end condition
     
     
     //step 3. game end (winner printing)

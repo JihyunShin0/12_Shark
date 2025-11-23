@@ -40,8 +40,6 @@ int board_stepShark(void)
     shark_position += step;
 }
 
-//board_coin[2] = 2;
-
 void board_printBoardStatus(void)
 {
     int i;
@@ -74,9 +72,9 @@ int board_getBoardStatus(int pos)
 
 int board_getBoardCoin(int pos)
 {
-    int res = board_coin[pos];
+    int coin = board_coin[pos];
     board_coin[pos] = 0;
-    return res;
+    return coin;
 }
 
 void board_initBoard(void)
