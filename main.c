@@ -82,6 +82,37 @@ int gameEnd(void)
     return flag_end;
 }
 
+int getAlivePlayer(void)
+{
+    int i;
+    int cnt = 0;
+    for (i = 0 ; i < N_PLAYER ; i++)
+    {
+        if (player_status[i] == PLAYERSTATUS_END)
+           cnt++;
+    }
+    
+    return cnt;
+}
+
+int getWinner(void)
+{
+    int i;
+    int winner = 0;
+    int max_coin = -1;
+    
+    for (i = 0 ; i < N_PLAYER ; i++)
+    {
+        if (player_coin[i] > max_coin)
+        {
+           max_coin = player_coin[i];
+           winner = i;
+        }
+    }
+    
+    return winner;
+}
+
 void checkDie(void)
 {
     int i;
@@ -198,14 +229,28 @@ int main(int argc, char *argv[])
     
     //step 3. game end (winner printing)
     
-    
-    //ending
     printf("\n\n\n\n\n");
     printf("======================================================\n");
     printf("                   ^^^^^^^^^^^^^^                     \n");
     printf("                 < CONGRATULATION >                   \n");
     printf("                   vvvvvvvvvvvvvv                     \n");
     printf("                 YOU WIN!!!!!!!!!!!                   \n");
+    printf("======================================================\n\n\n");
+    
+    printf("======================================================\n");
+    printf("ALIVE PLAYERS : %i                                    \n", getAlivePlayer());
+    printf("======================================================\n");
+    
+    printf("======================================================\n");
+    printf("WINNER : %s                                           \n", player_name[getWinner()]);
+    printf("======================================================\n");
+    
+    //ending
+    printf("\n\n\n\n\n");
+    printf("======================================================\n");
+    printf("                                                      \n");
+    printf("                     < GAME END >                     \n");
+    printf("                                                      \n");
     printf("======================================================\n\n\n");
     
     system("PAUSE");	
