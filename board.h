@@ -6,6 +6,8 @@
 //  Created by Jihyun Shin on 2025/11/18.
 // 
 
+#define N_BOARD                   20
+
 void board_initBoard(void);
 int board_getBoardStatus(int pos);
 int board_getSharkPosition(void);
